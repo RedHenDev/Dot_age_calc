@@ -1,1 +1,195 @@
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js" type="text/javascript"></script>
+
+   <script>
+     
+     let months = [];
+
+let start = false;
+
+  let sumDays = 0;
+  
+  let yearCount = 2018;
+  let monthCount = 8;
+  let dayCount = 25;
+  
+  let targetYear;
+  let targetMonth;
+  let targetDay;
+  
+  let theseDays;
+  // We know we are starting in Aug
+  // and not Feb, so don't have to worry about
+  // Feb here. Will have to factor this later
+  // to generalise.
+
+// Weeks old? If not zero, can display.
+let bleepy = 0;
+
+function setup(){
+  createCanvas(412,400);
+  background(200,0,200);
+  
+  for (let i = 1;
+      i < 13;
+      i++){
+    months.push(
+      new Month(i));
+  }
+  
+  targetYear = year();
+  targetMonth = month();
+  targetDay = day();
+  theseDays = months[monthCount-1].days;
+  
+}
+
+function draw(){
+  background(200,0,200);
+  
+  noStroke();
+  
+  fill(255);
+  textSize(32);
+  text(monthCount,200,110);
+  fill(0);
+  textSize(32);
+  text(dayCount,200,142);
+  
+  fill(87,12,25);
+  textSize(32);
+  text("days old = " +
+      sumDays, 100,200);
+  
+  if (bleepy){
+  fill(0);
+  textSize(32);
+  text(bleepy + " weeks old!", 100,244);
+  }
+  
+  fill(255);
+  textSize(32);
+  text("Target " +
+      targetDay + " " + targetMonth +
+       "\n" + targetYear, 100,300);
+  
+  if (targetYear == yearCount &&
+     targetMonth == monthCount &&
+     targetDay == dayCount){
+    bleepy = Math.round(sumDays/7);
+  } else if (start)
+  newCalc();
+  else {
+    fill(0,120,0);
+    stroke (0);
+    strokeWeight(3);
+    textSize(32);
+    text("Click to calc Dot's age :)",20,44);
+  }
+}
+
+function mousePressed(){
+  
+  start = !start;
+}
+
+class Month{
+  constructor(_index){
+    // Receive our index,
+    // which belongs to
+    // the months array.
+    this.index = _index;
+    
+    // Determine number of
+    // days according to
+    // which month we are 
+    // in. Oh, and Feb.
+    if ((_index % 2 !== 0 && _index < 8) || (_index > 7 && _index % 2 ===0)) {
+      this.days = 31;
+    } else
+      this.days = 30;
+    
+    
+    // Leap year?
+    if (this.days === 30 &&
+       _index === 2){
+      if (year() % 4 !== 0) this.days = 28;
+else if (year() % 100 !== 0) this.days = 29;
+else if (year() % 400 !== 0) this.days = 28;
+else (this.days = 29)
+    }
+  }
+  
+}
+
+
+
+function daysInFeb(_year){
+  
+  let noDays = 28;
+  
+  if (_year % 4 !== 0) noDays = 28;
+  else if (_year % 100 !== 0) noDays = 29;
+  else if (_year % 400 !== 0) noDays = 28;
+  else noDays = 29;
+  
+  return noDays;
+}
+
+function newCalc(){
+  
+  /* What we plan to do here is loop through
+  each day from day of birth to current
+   day.
+  
+   We must therefore, within the loop, keep
+   track of the current number of days in the
+   month, and whether it is a leap year for the
+   month if we are in february.
+   
+   When hitting february, we ought to call a
+   function to return number of days. Other
+   months are easily calculated at start of
+   program since they are constant across years.
+   
+   Each time we hit Jan 1st, we can increment
+   the year being counted.
+   
+   Stop condition will be if year being counted
+   is same as current year, and when we hit
+   present month and day.
+  */
+        
+    sumDays++;
+    dayCount++;
+    
+    // More days than in month counted?
+    if (dayCount > theseDays){
+      // Move to next month.
+      monthCount++;
+      // Start at first day of month.
+      dayCount = 1;
+      // February?
+      if (monthCount===2){
+        theseDays = daysInFeb(yearCount);
+      }
+      // Are we beyond Dec?
+      if (monthCount > 12){
+        // Increment year being counted.
+        yearCount++;
+        // Set month being counted to Jan.
+        monthCount = 1;
+      }
+      // Find new number of days to be counted.
+      theseDays = months[monthCount-1].days;
+      
+    }
+  
+  return sumDays;
+  
+}
+     
+     
+     
+</script>
+
 
