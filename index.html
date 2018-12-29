@@ -1,4 +1,6 @@
- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.3.21/Tone.min.js"></script> 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js" type="text/javascript"></script>
 
    <script>
      
@@ -40,7 +42,22 @@ function setup(){
   targetMonth = month();
   targetDay = day();
   theseDays = months[monthCount-1].days;
+ 
+ setupTone();
   
+}
+
+// synth as global variable.
+let synth;
+function setupTone(){
+ // 
+synth = new Tone.Synth().toMaster();
+
+}
+
+    // Climbs with sumDays.
+function makeTone(){
+ synth.triggerAttackRelease(50+sumDays*2,0.2);
 }
 
 function draw(){
@@ -76,8 +93,10 @@ function draw(){
      targetMonth == monthCount &&
      targetDay == dayCount){
     bleepy = Math.round(sumDays/7);
-  } else if (start)
+  } else if (start){
   newCalc();
+   makeTone();
+  }
   else {
     fill(0,120,0);
     stroke (0);
